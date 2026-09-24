@@ -6,7 +6,7 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+content="width=device-width, initial-scale=1.0">
 
 <title>Absensi Siswa</title>
 
@@ -518,14 +518,6 @@ button:disabled {
 }
 
 
-.gps-warning {
-
-  color: #d97706;
-
-  font-weight: bold;
-}
-
-
 .info-camera {
 
   background: #eff6ff;
@@ -543,6 +535,16 @@ button:disabled {
   margin-bottom: 15px;
 }
 
+
+.preview {
+
+  width: 100%;
+
+  border-radius: 15px;
+
+  margin-top: 10px;
+}
+
 </style>
 
 </head>
@@ -554,56 +556,46 @@ button:disabled {
 <div class="container">
 
 
-<!-- ================= LOGIN ================= -->
+<!-- LOGIN -->
 
 <div id="loginPage"
-     class="card">
+class="card">
 
   <div class="logo">
     A
   </div>
 
-
   <h1>
     Absensi Siswa
   </h1>
-
 
   <div class="subtitle">
     Silakan login untuk melakukan absensi
   </div>
 
-
   <div id="loginMessage"
-       class="message">
+  class="message">
   </div>
 
-
-  <label for="nis">
+  <label>
     NIS
   </label>
-
 
   <input
     type="text"
     id="nis"
     placeholder="Masukkan NIS"
-    autocomplete="off"
-  >
+    autocomplete="off">
 
-
-  <label for="pin">
+  <label>
     PIN
   </label>
-
 
   <input
     type="password"
     id="pin"
     placeholder="Masukkan PIN"
-    inputmode="numeric"
-  >
-
+    inputmode="numeric">
 
   <button
     id="loginButton"
@@ -614,7 +606,6 @@ button:disabled {
 
   </button>
 
-
   <div class="footer">
     Sistem Absensi Siswa
   </div>
@@ -623,21 +614,18 @@ button:disabled {
 
 
 
-<!-- ================= DASHBOARD ================= -->
+<!-- DASHBOARD -->
 
 <div id="dashboardPage"
-     class="card hidden">
-
+class="card hidden">
 
   <h1>
     Absensi Siswa
   </h1>
 
-
   <div class="subtitle">
     Data Siswa
   </div>
-
 
   <div class="student-info">
 
@@ -670,7 +658,6 @@ button:disabled {
 
   <div id="absensiButtons">
 
-
     <button
       class="btn-hadir"
       onclick="mulaiKamera()">
@@ -679,7 +666,6 @@ button:disabled {
 
     </button>
 
-
     <button
       class="btn-sakit"
       onclick="kirimStatus('Sakit')">
@@ -687,7 +673,6 @@ button:disabled {
       🤒 SAKIT
 
     </button>
-
 
     <button
       class="btn-izin"
@@ -700,26 +685,21 @@ button:disabled {
   </div>
 
 
-
-  <!-- ================= CAMERA ================= -->
+  <!-- CAMERA -->
 
   <div
     id="cameraSection"
     class="hidden">
 
-
-    <h3
-      style="text-align:center">
+    <h3 style="text-align:center">
 
       Ambil Foto Selfie
 
     </h3>
 
-
     <div class="info-camera">
 
-      📷 Kamera digunakan untuk mengambil
-      foto selfie sebagai bukti kehadiran.
+      📷 Arahkan kamera ke wajah kamu.
 
       <br><br>
 
@@ -734,12 +714,11 @@ button:disabled {
       <video
         id="video"
         autoplay
+        muted
         playsinline>
       </video>
 
-
-      <canvas id="canvas">
-      </canvas>
+      <canvas id="canvas"></canvas>
 
     </div>
 
@@ -754,7 +733,6 @@ button:disabled {
 
       </button>
 
-
       <button
         class="btn-cancel"
         onclick="tutupKamera()">
@@ -768,8 +746,7 @@ button:disabled {
   </div>
 
 
-
-  <!-- ================= LOCATION ================= -->
+  <!-- LOCATION -->
 
   <div
     id="locationBox"
@@ -790,8 +767,7 @@ button:disabled {
   </div>
 
 
-
-  <!-- ================= LOADING ================= -->
+  <!-- LOADING -->
 
   <div
     id="loading"
@@ -815,46 +791,38 @@ button:disabled {
 
   </button>
 
-
 </div>
 
 
 
-<!-- ================= SUCCESS ================= -->
+<!-- SUCCESS -->
 
 <div
   id="successPage"
   class="card hidden">
 
-
   <div class="success-screen">
-
 
     <div class="success-icon">
       ✓
     </div>
 
-
     <h1>
       Absensi Berhasil
     </h1>
 
-
     <p id="successStatus">
       Kehadiran berhasil dicatat.
     </p>
-
 
     <div
       id="successJam"
       class="jam">
     </div>
 
-
     <p>
       Terima kasih sudah melakukan absensi.
     </p>
-
 
     <button
       class="btn-login"
@@ -870,7 +838,7 @@ button:disabled {
 
 
 
-<!-- IFRAME UNTUK KOMUNIKASI DENGAN APPS SCRIPT -->
+<!-- IFRAME -->
 
 <iframe
   id="apiFrame"
@@ -891,18 +859,17 @@ button:disabled {
 <script>
 
 
-/* ==================================================
+/* =====================================================
    URL APPS SCRIPT
-================================================== */
+===================================================== */
 
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbz3jK1cYgxQ3rsCpvg1Ky8mG38A2IpIqyz5nUvOPx_cvXytyOAcuTua2eWsqNtAbUo8SQ/exec';
+'https://script.google.com/macros/s/AKfycbz3jK1cYgxQ3rsCpvg1Ky8mG38A2IpIqyz5nUvOPx_cvXytyOAcuTua2eWsqNtAbUo8SQ/exec';
 
 
-
-/* ==================================================
+/* =====================================================
    VARIABEL
-================================================== */
+===================================================== */
 
 let siswaLogin = null;
 
@@ -916,15 +883,16 @@ let latitudeSiswa = null;
 
 let longitudeSiswa = null;
 
-
-
-/* ==================================================
-   REQUEST ID
-================================================== */
-
 let requestCounter = 0;
 
+let pendingRequests = {};
 
+let gpsTimer = null;
+
+
+/* =====================================================
+   REQUEST ID
+===================================================== */
 
 function buatRequestId() {
 
@@ -939,22 +907,21 @@ function buatRequestId() {
 }
 
 
-
-/* ==================================================
+/* =====================================================
    PESAN DARI APPS SCRIPT
-================================================== */
+===================================================== */
 
 window.addEventListener(
   'message',
   function(event) {
 
-    if (!event.data) {
-      return;
-    }
-
-
     const data =
       event.data;
+
+
+    if (!data) {
+      return;
+    }
 
 
     if (
@@ -964,48 +931,61 @@ window.addEventListener(
     }
 
 
-    /* LOGIN */
-
     if (
-      data.action === 'login'
+      data.type !==
+      'ABSENSI_RESPONSE'
     ) {
 
-      prosesHasilLogin(data);
-
       return;
+
     }
 
 
-    /* ABSENSI */
+    const requestId =
+      data.requestId;
+
 
     if (
-      data.action === 'absensi'
+      requestId &&
+      pendingRequests[requestId]
     ) {
 
-      prosesHasilAbsensi(data);
+      clearTimeout(
+        pendingRequests[requestId]
+          .timer
+      );
 
-      return;
+
+      delete
+        pendingRequests[requestId];
+
     }
 
 
-    /* GENERIC */
-
     if (
-      data.success !== undefined &&
-      data.action === undefined
+      data.action ===
+      'login'
     ) {
 
-      if (
-        window.lastAction === 'login'
-      ) {
+      prosesHasilLogin(
+        data
+      );
 
-        prosesHasilLogin(data);
+      return;
 
-      } else {
+    }
 
-        prosesHasilAbsensi(data);
 
-      }
+    if (
+      data.action ===
+      'absensi'
+    ) {
+
+      prosesHasilAbsensi(
+        data
+      );
+
+      return;
 
     }
 
@@ -1013,47 +993,69 @@ window.addEventListener(
 );
 
 
-
-/* ==================================================
-   KIRIM FORM KE APPS SCRIPT
-================================================== */
+/* =====================================================
+   KIRIM KE APPS SCRIPT
+===================================================== */
 
 function kirimKeAppsScript(
   action,
   fields
 ) {
 
+  const requestId =
+    buatRequestId();
+
+
+  fields =
+    fields || {};
+
+
+  fields.requestId =
+    requestId;
+
+
   const form =
-    document.createElement('form');
+    document.createElement(
+      'form'
+    );
 
 
   form.method =
     'POST';
 
+
   form.action =
     API_URL;
 
+
   form.target =
     'apiFrame';
+
 
   form.style.display =
     'none';
 
 
-  const inputAction =
-    document.createElement('input');
+  const actionInput =
+    document.createElement(
+      'input'
+    );
 
-  inputAction.type =
+
+  actionInput.type =
     'hidden';
 
-  inputAction.name =
+
+  actionInput.name =
     'action';
 
-  inputAction.value =
+
+  actionInput.value =
     action;
 
+
   form.appendChild(
-    inputAction
+    actionInput
   );
 
 
@@ -1065,14 +1067,18 @@ function kirimKeAppsScript(
           'input'
         );
 
+
       input.type =
         'hidden';
+
 
       input.name =
         key;
 
+
       input.value =
         fields[key] ?? '';
+
 
       form.appendChild(
         input
@@ -1086,6 +1092,86 @@ function kirimKeAppsScript(
   );
 
 
+  const timer =
+    setTimeout(
+      function() {
+
+        if (
+          pendingRequests[
+            requestId
+          ]
+        ) {
+
+          delete
+            pendingRequests[
+              requestId
+            ];
+
+
+          if (
+            action ===
+            'login'
+          ) {
+
+            const button =
+              document
+                .getElementById(
+                  'loginButton'
+                );
+
+
+            button.disabled =
+              false;
+
+
+            button.innerText =
+              'MASUK';
+
+
+            tampilkanPesan(
+
+              'loginMessage',
+
+              'Server terlalu lama merespons. Periksa koneksi internet lalu coba lagi.',
+
+              'error'
+
+            );
+
+          }
+
+          else {
+
+            tampilkanLoading(
+              false
+            );
+
+
+            alert(
+              'Server terlalu lama merespons. Jangan menekan tombol berulang kali. Periksa Google Sheet terlebih dahulu.'
+            );
+
+          }
+
+        }
+
+      },
+      action === 'login'
+        ? 15000
+        : 30000
+    );
+
+
+  pendingRequests[
+    requestId
+  ] = {
+
+    timer:
+      timer
+
+  };
+
+
   form.submit();
 
 
@@ -1095,41 +1181,53 @@ function kirimKeAppsScript(
       form.remove();
 
     },
-    5000
+    1000
   );
+
 }
 
 
-
-/* ==================================================
+/* =====================================================
    LOGIN
-================================================== */
+===================================================== */
 
 function login() {
 
   const nis =
     document
-      .getElementById('nis')
+      .getElementById(
+        'nis'
+      )
       .value
       .trim();
 
 
   const pin =
     document
-      .getElementById('pin')
+      .getElementById(
+        'pin'
+      )
       .value
       .trim();
 
 
-  if (!nis || !pin) {
+  if (
+    !nis ||
+    !pin
+  ) {
 
     tampilkanPesan(
+
       'loginMessage',
+
       'NIS dan PIN wajib diisi.',
+
       'error'
+
     );
 
     return;
+
   }
 
 
@@ -1143,15 +1241,20 @@ function login() {
   button.disabled =
     true;
 
+
   button.innerText =
     'MEMERIKSA...';
 
 
-  window.lastAction =
-    'login';
+  tampilkanPesan(
 
+    'loginMessage',
 
-  tampilkanLoadingLogin();
+    'Menghubungkan ke server...',
+
+    'success'
+
+  );
 
 
   kirimKeAppsScript(
@@ -1160,9 +1263,11 @@ function login() {
 
     {
 
-      nis: nis,
+      nis:
+        nis,
 
-      pin: pin
+      pin:
+        pin
 
     }
 
@@ -1171,10 +1276,9 @@ function login() {
 }
 
 
-
-/* ==================================================
+/* =====================================================
    HASIL LOGIN
-================================================== */
+===================================================== */
 
 function prosesHasilLogin(
   result
@@ -1190,23 +1294,28 @@ function prosesHasilLogin(
   button.disabled =
     false;
 
+
   button.innerText =
     'MASUK';
 
 
-  hapusLoadingLogin();
-
-
-  if (!result.success) {
+  if (
+    !result.success
+  ) {
 
     tampilkanPesan(
+
       'loginMessage',
+
       result.message ||
-        'Login gagal.',
+      'Login gagal.',
+
       'error'
+
     );
 
     return;
+
   }
 
 
@@ -1226,13 +1335,13 @@ function prosesHasilLogin(
   tampilkanDashboard(
     result
   );
+
 }
 
 
-
-/* ==================================================
+/* =====================================================
    DASHBOARD
-================================================== */
+===================================================== */
 
 function tampilkanDashboard(
   result
@@ -1292,6 +1401,7 @@ function tampilkanDashboard(
       result
         .absensiHariIni
         .jam
+
     );
 
 
@@ -1307,10 +1417,9 @@ function tampilkanDashboard(
 }
 
 
-
-/* ==================================================
+/* =====================================================
    STATUS
-================================================== */
+===================================================== */
 
 function tampilkanStatus(
   status,
@@ -1328,11 +1437,15 @@ function tampilkanStatus(
     'status-box';
 
 
-  if (status === 'Hadir') {
+  if (
+    status ===
+    'Hadir'
+  ) {
 
     box.classList.add(
       'status-hadir'
     );
+
 
     box.innerHTML =
       '✓ HADIR<br>Jam: ' +
@@ -1341,12 +1454,14 @@ function tampilkanStatus(
   }
 
   else if (
-    status === 'Sakit'
+    status ===
+    'Sakit'
   ) {
 
     box.classList.add(
       'status-sakit'
     );
+
 
     box.innerHTML =
       '🤒 SAKIT<br>Jam: ' +
@@ -1355,12 +1470,14 @@ function tampilkanStatus(
   }
 
   else if (
-    status === 'Izin'
+    status ===
+    'Izin'
   ) {
 
     box.classList.add(
       'status-izin'
     );
+
 
     box.innerHTML =
       '📝 IZIN<br>Jam: ' +
@@ -1369,12 +1486,14 @@ function tampilkanStatus(
   }
 
   else if (
-    status === 'Alfa'
+    status ===
+    'Alfa'
   ) {
 
     box.classList.add(
       'status-belum'
     );
+
 
     box.innerHTML =
       '❌ ALFA<br>Jam: ' +
@@ -1388,17 +1507,18 @@ function tampilkanStatus(
       'status-belum'
     );
 
+
     box.innerText =
       'Belum melakukan absensi';
+
   }
 
 }
 
 
-
-/* ==================================================
+/* =====================================================
    KAMERA
-================================================== */
+===================================================== */
 
 async function mulaiKamera() {
 
@@ -1425,9 +1545,19 @@ async function mulaiKamera() {
   try {
 
     if (
+      !window.isSecureContext
+    ) {
+
+      throw new Error(
+        'Halaman bukan HTTPS.'
+      );
+
+    }
+
+
+    if (
       !navigator.mediaDevices ||
-      !navigator.mediaDevices
-        .getUserMedia
+      !navigator.mediaDevices.getUserMedia
     ) {
 
       throw new Error(
@@ -1449,11 +1579,11 @@ async function mulaiKamera() {
             },
 
             width: {
-              ideal: 720
+              ideal: 640
             },
 
             height: {
-              ideal: 720
+              ideal: 480
             }
 
           },
@@ -1486,19 +1616,43 @@ async function mulaiKamera() {
     );
 
 
+    let pesan =
+      'Kamera tidak dapat digunakan.';
+
+
+    if (
+      error.name ===
+      'NotAllowedError'
+    ) {
+
+      pesan =
+        'Izin kamera ditolak. Silakan izinkan kamera untuk website ini.';
+
+    }
+
+    else if (
+      error.name ===
+      'NotFoundError'
+    ) {
+
+      pesan =
+        'Kamera tidak ditemukan pada HP.';
+
+    }
+
+    else if (
+      error.name ===
+      'NotReadableError'
+    ) {
+
+      pesan =
+        'Kamera sedang digunakan aplikasi lain. Tutup aplikasi kamera lalu coba lagi.';
+
+    }
+
+
     alert(
-      'Kamera tidak dapat digunakan.\n\n' +
-
-      'Pastikan:\n' +
-
-      '1. Kamu membuka halaman dari HTTPS.\n' +
-
-      '2. Izin kamera diberikan.\n' +
-
-      '3. Kamera HP tidak sedang digunakan aplikasi lain.\n\n' +
-
-      'Error: ' +
-      error.message
+      pesan
     );
 
 
@@ -1509,10 +1663,9 @@ async function mulaiKamera() {
 }
 
 
-
-/* ==================================================
+/* =====================================================
    AMBIL FOTO
-================================================== */
+===================================================== */
 
 function ambilFoto() {
 
@@ -1540,14 +1693,63 @@ function ambilFoto() {
     );
 
     return;
+
+  }
+
+
+  /*
+   * Batasi foto maksimal
+   * 640 pixel agar upload
+   * lebih cepat.
+   */
+
+  const maxSize =
+    640;
+
+
+  let width =
+    video.videoWidth;
+
+
+  let height =
+    video.videoHeight;
+
+
+  if (
+    width > maxSize ||
+    height > maxSize
+  ) {
+
+    const ratio =
+      Math.min(
+
+        maxSize / width,
+
+        maxSize / height
+
+      );
+
+
+    width =
+      Math.round(
+        width * ratio
+      );
+
+
+    height =
+      Math.round(
+        height * ratio
+      );
+
   }
 
 
   canvas.width =
-    video.videoWidth;
+    width;
+
 
   canvas.height =
-    video.videoHeight;
+    height;
 
 
   const ctx =
@@ -1556,8 +1758,11 @@ function ambilFoto() {
     );
 
 
+  ctx.save();
+
+
   ctx.translate(
-    canvas.width,
+    width,
     0
   );
 
@@ -1576,21 +1781,27 @@ function ambilFoto() {
 
     0,
 
-    canvas.width,
+    width,
 
-    canvas.height
+    height
+
   );
 
 
+  ctx.restore();
+
+
   /*
-   * JPEG 0.65 supaya ukuran
-   * file tidak terlalu besar
+   * Kompresi JPEG.
    */
 
   fotoBase64 =
     canvas.toDataURL(
+
       'image/jpeg',
-      0.65
+
+      0.55
+
     );
 
 
@@ -1618,10 +1829,9 @@ function ambilFoto() {
 }
 
 
-
-/* ==================================================
+/* =====================================================
    TUTUP KAMERA
-================================================== */
+===================================================== */
 
 function tutupKamera() {
 
@@ -1640,6 +1850,7 @@ function tutupKamera() {
 
     stream =
       null;
+
   }
 
 
@@ -1651,20 +1862,26 @@ function tutupKamera() {
     .add('hidden');
 
 
-  document
-    .getElementById(
-      'absensiButtons'
-    )
-    .classList
-    .remove('hidden');
+  if (
+    !siswaLogin
+  ) {
+
+    return;
+
+  }
+
+
+  /*
+   * Jangan tampilkan tombol
+   * jika proses GPS sedang berjalan.
+   */
 
 }
 
 
-
-/* ==================================================
+/* =====================================================
    GPS
-================================================== */
+===================================================== */
 
 function ambilLokasiGPS() {
 
@@ -1672,28 +1889,90 @@ function ambilLokasiGPS() {
     !navigator.geolocation
   ) {
 
+    tampilkanLoading(
+      false
+    );
+
+
     alert(
       'Browser tidak mendukung GPS.'
     );
 
+
     return;
+
   }
 
 
   tampilkanLoading(
+
     true,
+
     'Mengambil lokasi GPS...'
+
   );
 
 
-  navigator
-    .geolocation
+  latitudeSiswa =
+    null;
+
+
+  longitudeSiswa =
+    null;
+
+
+  /*
+   * Maksimal 8 detik.
+   */
+
+  gpsTimer =
+    setTimeout(
+      function() {
+
+        gpsTimer =
+          null;
+
+
+        tampilkanLoading(
+          false
+        );
+
+
+        alert(
+
+          'Lokasi GPS terlalu lama ditemukan.\n\n' +
+
+          'Pastikan GPS/lokasi HP aktif dan izin lokasi browser sudah diizinkan.'
+
+        );
+
+      },
+
+      8000
+
+    );
+
+
+  navigator.geolocation
     .getCurrentPosition(
 
       function(position) {
 
+        if (gpsTimer) {
+
+          clearTimeout(
+            gpsTimer
+          );
+
+          gpsTimer =
+            null;
+
+        }
+
+
         latitudeSiswa =
           position.coords.latitude;
+
 
         longitudeSiswa =
           position.coords.longitude;
@@ -1711,7 +1990,7 @@ function ambilLokasiGPS() {
 
           '<span class="gps-ok">' +
 
-          '✓ Lokasi berhasil ditemukan' +
+          '✓ Lokasi ditemukan' +
 
           '</span>' +
 
@@ -1735,7 +2014,11 @@ function ambilLokasiGPS() {
 
 
         tampilkanLoading(
-          false
+
+          true,
+
+          'Menyimpan absensi...'
+
         );
 
 
@@ -1745,6 +2028,18 @@ function ambilLokasiGPS() {
 
 
       function(error) {
+
+        if (gpsTimer) {
+
+          clearTimeout(
+            gpsTimer
+          );
+
+          gpsTimer =
+            null;
+
+        }
+
 
         tampilkanLoading(
           false
@@ -1761,11 +2056,9 @@ function ambilLokasiGPS() {
         ) {
 
           pesan =
-            'Izin lokasi ditolak.\n\n' +
+            'Izin lokasi ditolak.\n\nAktifkan izin lokasi untuk website ini.';
 
-            'Aktifkan izin lokasi untuk browser.';
         }
-
 
         else if (
           error.code ===
@@ -1773,11 +2066,9 @@ function ambilLokasiGPS() {
         ) {
 
           pesan =
-            'Lokasi tidak tersedia.\n\n' +
+            'Lokasi tidak tersedia.\n\nPastikan GPS HP aktif.';
 
-            'Pastikan GPS HP aktif.';
         }
-
 
         else if (
           error.code ===
@@ -1785,23 +2076,34 @@ function ambilLokasiGPS() {
         ) {
 
           pesan =
-            'Waktu mencari lokasi habis.\n\n' +
+            'Lokasi GPS terlalu lama ditemukan.';
 
-            'Silakan coba lagi.';
         }
 
 
-        alert(pesan);
+        alert(
+          pesan
+        );
 
 
         fotoBase64 =
           null;
 
+
         latitudeSiswa =
           null;
 
+
         longitudeSiswa =
           null;
+
+
+        document
+          .getElementById(
+            'absensiButtons'
+          )
+          .classList
+          .remove('hidden');
 
       },
 
@@ -1812,10 +2114,16 @@ function ambilLokasiGPS() {
           true,
 
         timeout:
-          15000,
+          7000,
+
+        /*
+         * Boleh menggunakan
+         * lokasi cache yang
+         * masih cukup baru.
+         */
 
         maximumAge:
-          0
+          10000
 
       }
 
@@ -1824,10 +2132,9 @@ function ambilLokasiGPS() {
 }
 
 
-
-/* ==================================================
+/* =====================================================
    KIRIM HADIR
-================================================== */
+===================================================== */
 
 function kirimHadir() {
 
@@ -1837,7 +2144,9 @@ function kirimHadir() {
       'Foto selfie belum tersedia.'
     );
 
+
     return;
+
   }
 
 
@@ -1850,7 +2159,9 @@ function kirimHadir() {
       'Lokasi GPS belum tersedia.'
     );
 
+
     return;
+
   }
 
 
@@ -1858,13 +2169,9 @@ function kirimHadir() {
 
     true,
 
-    'Memeriksa lokasi dan menyimpan absensi...'
+    'Menyimpan absensi...'
 
   );
-
-
-  window.lastAction =
-    'absensi';
 
 
   kirimKeAppsScript(
@@ -1898,10 +2205,9 @@ function kirimHadir() {
 }
 
 
-
-/* ==================================================
+/* =====================================================
    SAKIT / IZIN
-================================================== */
+===================================================== */
 
 function kirimStatus(
   status
@@ -1909,9 +2215,11 @@ function kirimStatus(
 
   const konfirmasi =
     confirm(
+
       'Apakah Anda yakin memilih status ' +
       status +
       '?'
+
     );
 
 
@@ -1929,10 +2237,6 @@ function kirimStatus(
     '...'
 
   );
-
-
-  window.lastAction =
-    'absensi';
 
 
   kirimKeAppsScript(
@@ -1966,10 +2270,9 @@ function kirimStatus(
 }
 
 
-
-/* ==================================================
+/* =====================================================
    HASIL ABSENSI
-================================================== */
+===================================================== */
 
 function prosesHasilAbsensi(
   result
@@ -1980,7 +2283,9 @@ function prosesHasilAbsensi(
   );
 
 
-  if (!result.success) {
+  if (
+    !result.success
+  ) {
 
     if (
       result.jarak !==
@@ -2010,8 +2315,10 @@ function prosesHasilAbsensi(
     else {
 
       alert(
+
         result.message ||
         'Absensi gagal.'
+
       );
 
     }
@@ -2020,14 +2327,25 @@ function prosesHasilAbsensi(
     fotoBase64 =
       null;
 
+
     latitudeSiswa =
       null;
+
 
     longitudeSiswa =
       null;
 
 
+    document
+      .getElementById(
+        'absensiButtons'
+      )
+      .classList
+      .remove('hidden');
+
+
     return;
+
   }
 
 
@@ -2038,10 +2356,9 @@ function prosesHasilAbsensi(
 }
 
 
-
-/* ==================================================
+/* =====================================================
    BERHASIL
-================================================== */
+===================================================== */
 
 function tampilkanBerhasil(
   result
@@ -2082,10 +2399,9 @@ function tampilkanBerhasil(
 }
 
 
-
-/* ==================================================
-   KEMBALI
-================================================== */
+/* =====================================================
+   KEMBALI DASHBOARD
+===================================================== */
 
 function kembaliDashboard() {
 
@@ -2136,10 +2452,9 @@ function kembaliDashboard() {
 }
 
 
-
-/* ==================================================
+/* =====================================================
    LOGOUT
-================================================== */
+===================================================== */
 
 function logout() {
 
@@ -2155,22 +2470,28 @@ function logout() {
         }
       );
 
+
     stream =
       null;
+
   }
 
 
   siswaLogin =
     null;
 
+
   pinLogin =
     '';
+
 
   fotoBase64 =
     null;
 
+
   latitudeSiswa =
     null;
+
 
   longitudeSiswa =
     null;
@@ -2240,6 +2561,11 @@ function logout() {
     .add('hidden');
 
 
+  tampilkanLoading(
+    false
+  );
+
+
   document
     .getElementById(
       'loginMessage'
@@ -2250,10 +2576,9 @@ function logout() {
 }
 
 
-
-/* ==================================================
+/* =====================================================
    LOADING
-================================================== */
+===================================================== */
 
 function tampilkanLoading(
   tampil,
@@ -2295,56 +2620,9 @@ function tampilkanLoading(
 }
 
 
-
-/* ==================================================
-   LOADING LOGIN
-================================================== */
-
-function tampilkanLoadingLogin() {
-
-  document
-    .getElementById(
-      'loginMessage'
-    )
-    .className =
-    'message';
-
-
-  const button =
-    document
-      .getElementById(
-        'loginButton'
-      );
-
-
-  button.innerText =
-    'MEMERIKSA...';
-
-}
-
-
-function hapusLoadingLogin() {
-
-  const button =
-    document
-      .getElementById(
-        'loginButton'
-      );
-
-
-  button.disabled =
-    false;
-
-  button.innerText =
-    'MASUK';
-
-}
-
-
-
-/* ==================================================
+/* =====================================================
    PESAN
-================================================== */
+===================================================== */
 
 function tampilkanPesan(
   id,
@@ -2370,21 +2648,23 @@ function tampilkanPesan(
 }
 
 
-
-/* ==================================================
+/* =====================================================
    ENTER LOGIN
-================================================== */
+===================================================== */
 
 document
   .getElementById(
     'pin'
   )
   .addEventListener(
+
     'keydown',
+
     function(event) {
 
       if (
-        event.key === 'Enter'
+        event.key ===
+        'Enter'
       ) {
 
         login();
@@ -2392,6 +2672,7 @@ document
       }
 
     }
+
   );
 
 </script>
