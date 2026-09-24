@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Test Kamera Absensi</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+    }
+
+    .container {
+      max-width: 480px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .status {
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 10px;
+      text-align: center;
+      background: #f1f5f9;
+    }
+
+    .camera {
+      background: black;
+      border-radius: 15px;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      display: block;
+      transform: scaleX(-1);
+    }
+
+    canvas {
+      display: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-camera {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-photo {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-location {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .success {
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    .error {
+      color: #dc2626;
+      font-weight: bold;
+    }
+
+    #hasilFoto {
+      width: 100%;
+      margin-top: 15px;
+      border-radius: 15px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="card">
+
+    <h1>📷 Kamera Absensi</h1>
+
+    <div id="status" class="status">
+      Menunggu kamera...
+    </div>
+
+    <div class="camera">
+
+      <video
+        id="video"
+        autoplay
+        playsinline
+        muted>
+      </video>
+
+      <canvas id="canvas"></canvas>
+
+    </div>
+
+    <button
+      id="btnKamera"
+      class="btn-camera"
+      onclick="bukaKamera()">
+
+      📷 BUKA KAMERA
+
+    </button>
+
+    <button
+      id="btnFoto"
+      class="btn-photo"
+      onclick="ambilFoto()"
+      disabled>
+
+      📸 AMBIL FOTO
+
+    </button>
+
+    <img
+      id="hasilFoto"
+      alt="Hasil selfie">
+
+    <button
+      class="btn-location"
+      onclick="ambilGPS()">
+
+      📍 CEK LOKASI GPS
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<script>
+
+let stream = null;
+
+let fotoBase64 = null;
+
+
+/* ==========================================
+   BUKA KAMERA
+========================================== */
+
+async function bukaKamera() {
+
+  const status =
+    document.getElementById("status");
+
+  try {
+
+    if (
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
+
+      throw new Error(
+        "Browser tidak mendukung akses kamera."
+      );
+
+    }
+
+
+    status.innerText =
+      "📷 Meminta izin kamera...";
+
+
+    stream =
+      await navigator
+        .mediaDevices
+        .getUserMedia({
+
+          video: {
+
+            facingMode: "user",
+
+            width: {
+              ideal: 720
+            },
+
+            height: {
+              ideal: 720
+            }
+
+          },
+
+          audio: false
+
+        });
+
+
+    const video =
+      document.getElementById("video");
+
+
+    video.srcObject = stream;
+
+
+    await video.play();
+
+
+    status.innerHTML =
+      '<span class="success">' +
+      '✓ Kamera berhasil dibuka!' +
+      '</span>';
+
+
+    document
+      .getElementById("btnFoto")
+      .disabled = false;
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+
+    let pesan =
+      error.message;
+
+
+    if (
+      error.name ===
+      "NotAllowedError"
+    ) {
+
+      pesan =
+        "Izin kamera ditolak. " +
+        "Silakan pilih Izinkan pada permintaan kamera.";
+
+    }
+
+
+    if (
+      error.name ===
+      "NotFoundError"
+    ) {
+
+      pesan =
+        "Kamera tidak ditemukan. " +
+        "Pastikan perangkat memiliki kamera.";
+
+    }
+
+
+    if (
+      error.name ===
+      "NotReadableError"
+    ) {
+
+      pesan =
+        "Kamera sedang digunakan aplikasi lain.";
+
+    }
+
+
+    status.innerHTML =
+      '<span class="error">' +
+      '❌ ' + pesan +
+      '</span>';
+
+  }
+
+}
+
+
+/* ==========================================
+   AMBIL FOTO
+========================================== */
+
+function ambilFoto() {
+
+  const video =
+    document.getElementById("video");
+
+  const canvas =
+    document.getElementById("canvas");
+
+  if (
+    video.videoWidth === 0
+  ) {
+
+    alert(
+      "Kamera belum siap."
+    );
+
+    return;
+
+  }
+
+
+  canvas.width =
+    video.videoWidth;
+
+  canvas.height =
+    video.videoHeight;
+
+
+  const ctx =
+    canvas.getContext("2d");
+
+
+  ctx.translate(
+    canvas.width,
+    0
+  );
+
+  ctx.scale(
+    -1,
+    1
+  );
+
+
+  ctx.drawImage(
+
+    video,
+
+    0,
+
+    0,
+
+    canvas.width,
+
+    canvas.height
+
+  );
+
+
+  fotoBase64 =
+    canvas.toDataURL(
+      "image/jpeg",
+      0.7
+    );
+
+
+  document
+    .getElementById("hasilFoto")
+    .src = fotoBase64;
+
+
+  document
+    .getElementById("hasilFoto")
+    .style.display = "block";
+
+
+  document
+    .getElementById("status")
+    .innerHTML =
+      '<span class="success">' +
+      '✓ Foto berhasil diambil!' +
+      '</span>';
+
+
+  /*
+   * Matikan kamera
+   */
+
+  if (stream) {
+
+    stream
+      .getTracks()
+      .forEach(function(track) {
+
+        track.stop();
+
+      });
+
+    stream = null;
+
+  }
+
+}
+
+
+/* ==========================================
+   GPS
+========================================== */
+
+function ambilGPS() {
+
+  const status =
+    document.getElementById("status");
+
+
+  if (
+    !navigator.geolocation
+  ) {
+
+    status.innerHTML =
+      '<span class="error">' +
+      'GPS tidak didukung browser.' +
+      '</span>';
+
+    return;
+
+  }
+
+
+  status.innerText =
+    "📍 Mengambil lokasi GPS...";
+
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(position) {
+
+      const latitude =
+        position.coords.latitude;
+
+      const longitude =
+        position.coords.longitude;
+
+      const accuracy =
+        Math.round(
+          position.coords.accuracy
+        );
+
+
+      status.innerHTML =
+
+        '<span class="success">' +
+
+        '✓ GPS berhasil ditemukan<br>' +
+
+        'Latitude: ' +
+        latitude.toFixed(6) +
+
+        '<br>' +
+
+        'Longitude: ' +
+        longitude.toFixed(6) +
+
+        '<br>' +
+
+        'Akurasi: ±' +
+        accuracy +
+        ' meter' +
+
+        '</span>';
+
+    },
+
+    function(error) {
+
+      status.innerHTML =
+        '<span class="error">' +
+        '❌ GPS tidak dapat digunakan.<br>' +
+        error.message +
+        '</span>';
+
+    },
+
+    {
+
+      enableHighAccuracy: true,
+
+      timeout: 20000,
+
+      maximumAge: 0
+
+    }
+
+  );
+
+}
+
+
+/* ==========================================
+   MATIKAN KAMERA SAAT KELUAR
+========================================== */
+
+window.addEventListener(
+  "beforeunload",
+  function() {
+
+    if (stream) {
+
+      stream
+        .getTracks()
+        .forEach(function(track) {
+
+          track.stop();
+
+        });
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+
+</html>
