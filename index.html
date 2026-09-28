@@ -783,84 +783,68 @@ function kirimRequest(action, data) {
 
   return new Promise(function(resolve, reject) {
 
-    const requestId =
-      buatRequestId();
+    const requestId = buatRequestId();
 
+    currentRequestId = requestId;
 
-    currentRequestId =
-      requestId;
-
-
-    formAction.value =
-      action;
-
-
-    formRequestId.value =
-      requestId;
-
-
-    formNis.value =
-      data.nis || "";
-
-
-    formPin.value =
-      data.pin || "";
-
-
-    formStatus.value =
-      data.status || "";
-
-
-    formLatitude.value =
-      data.latitude || "";
-
-
-    formLongitude.value =
-      data.longitude || "";
-
-
-    formFoto.value =
-      data.foto || "";
-
+    formAction.value = action;
+    formRequestId.value = requestId;
+    formNis.value = data.nis || "";
+    formPin.value = data.pin || "";
+    formStatus.value = data.status || "";
+    formLatitude.value = data.latitude || "";
+    formLongitude.value = data.longitude || "";
+    formFoto.value = data.foto || "";
 
     let selesai = false;
 
+    const timeout = setTimeout(function() {
 
-    function listener(event) {
-
-      const response =
-        event.data;
-
-
-      if (
-        !response ||
-        response.type !==
-          "ABSENSI_RESPONSE"
-      ) {
-
+      if (selesai) {
         return;
-
       }
-
-
-      if (
-        response.requestId !==
-          requestId
-      ) {
-
-        return;
-
-      }
-
 
       selesai = true;
-
 
       window.removeEventListener(
         "message",
         listener
       );
 
+      reject(
+        new Error(
+          "Server terlalu lama merespons."
+        )
+      );
+
+    }, 30000);
+
+
+    function listener(event) {
+
+      const response = event.data;
+
+      if (
+        !response ||
+        response.type !== "ABSENSI_RESPONSE"
+      ) {
+        return;
+      }
+
+      if (
+        response.requestId !== requestId
+      ) {
+        return;
+      }
+
+      selesai = true;
+
+      clearTimeout(timeout);
+
+      window.removeEventListener(
+        "message",
+        listener
+      );
 
       resolve(response.result);
 
@@ -873,65 +857,13 @@ function kirimRequest(action, data) {
     );
 
 
-    /*
-     * Timeout
-     */
-
-    const timeout =
-      setTimeout(function() {
-
-        if (selesai) {
-          return;
-        }
-
-
-        window.removeEventListener(
-          "message",
-          listener
-        );
-
-
-        reject(
-          new Error(
-            "Server terlalu lama merespons."
-          )
-        );
-
-      }, 30000);
-
-
-    /*
-     * Submit ke Apps Script
-     */
-
-    apiForm.action =
-      API_URL;
-
+    apiForm.action = API_URL;
 
     apiForm.submit();
-
-
-    /*
-     * Bersihkan timeout ketika selesai
-     */
-
-    const oldResolve =
-      resolve;
-
-
-    resolve = function(value) {
-
-      clearTimeout(timeout);
-
-      oldResolve(value);
-
-    };
 
   });
 
 }
-
-
 /* =================================================
    LOGIN
 ================================================= */
@@ -1557,6 +1489,8 @@ async function ambilFoto() {
 
           nis:
             siswaLogin.nis,
+         pin:
+        siswaLogin.pin,
 
           status:
             "Hadir",
